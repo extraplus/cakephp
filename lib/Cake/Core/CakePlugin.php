@@ -162,7 +162,10 @@ class CakePlugin {
 
 		$path = self::path($plugin);
 		if ($config['bootstrap'] === true) {
-			return include $path . 'Config' . DS . 'bootstrap.php';
+			if(file_exists($path . 'Config' . DS . 'bootstrap.php')) {
+				return include $path . 'Config' . DS . 'bootstrap.php';
+			}
+			return false;
 		}
 
 		$bootstrap = (array)$config['bootstrap'];
