@@ -24,8 +24,8 @@ App::uses('DbAcl', 'Model');
 App::uses('Hash', 'Utility');
 
 /**
- * Shell for ACL management.  This console is known to have issues with zend.ze1_compatibility_mode
- * being enabled.  Be sure to turn it off when using this shell.
+ * Shell for ACL management. This console is known to have issues with zend.ze1_compatibility_mode
+ * being enabled. Be sure to turn it off when using this shell.
  *
  * @package       Cake.Console.Command
  */
@@ -70,12 +70,15 @@ class AclShell extends AppShell {
 			$this->connection = $this->params['connection'];
 		}
 
-		if (!in_array(Configure::read('Acl.classname'), array('DbAcl', 'DB_ACL'))) {
+		$class = Configure::read('Acl.classname');
+		list($plugin, $class) = pluginSplit($class, true);
+		App::uses($class, $plugin . 'Controller/Component/Acl');
+		if (!in_array($class, array('DbAcl', 'DB_ACL')) && !is_subclass_of($class, 'DbAcl')) {
 			$out = "--------------------------------------------------\n";
 			$out .= __d('cake_console', 'Error: Your current Cake configuration is set to an ACL implementation other than DB.') . "\n";
 			$out .= __d('cake_console', 'Please change your core config to reflect your decision to use DbAcl before attempting to use this script') . "\n";
 			$out .= "--------------------------------------------------\n";
-			$out .= __d('cake_console', 'Current ACL Classname: %s', Configure::read('Acl.classname')) . "\n";
+			$out .= __d('cake_console', 'Current ACL Classname: %s', $class) . "\n";
 			$out .= "--------------------------------------------------\n";
 			$this->err($out);
 			$this->_stop();
@@ -321,7 +324,7 @@ class AclShell extends AppShell {
 		$this->hr();
 
 		$stack = array();
-		$last  = null;
+		$last = null;
 
 		foreach ($nodes as $n) {
 			$stack[] = $n;
@@ -498,7 +501,7 @@ class AclShell extends AppShell {
 					' - <model>.<id> - The node will be bound to a specific record of the given model.',
 					'',
 					' - <alias> - The node will be given a string alias (or path, in the case of <parent>)',
-					"   i.e. 'John'.  When used with <parent>, this takes the form of an alias path,",
+					"   i.e. 'John'. When used with <parent>, this takes the form of an alias path,",
 					"   i.e. <group>/<subgroup>/<parent>.",
 					'',
 					"To add a node at the root level, enter 'root' or '/' as the <parent> parameter."
@@ -595,7 +598,7 @@ class AclShell extends AppShell {
  * @return array Variables
  */
 	protected function _dataVars($type = null) {
-		if ($type == null) {
+		if (!$type) {
 			$type = $this->args[0];
 		}
 		$vars = array();

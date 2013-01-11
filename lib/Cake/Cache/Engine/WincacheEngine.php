@@ -121,7 +121,7 @@ class WincacheEngine extends CacheEngine {
 	}
 
 /**
- * Delete all keys from the cache.  This will clear every
+ * Delete all keys from the cache. This will clear every
  * item in the cache matching the cache config prefix.
  *
  * @param boolean $check If true, nothing will be cleared, as entries will
@@ -183,6 +183,7 @@ class WincacheEngine extends CacheEngine {
  * @return boolean success
  **/
 	public function clearGroup($group) {
+		$success = null;
 		wincache_ucache_inc($this->settings['prefix'] . $group, 1, $success);
 		return $success;
 	}

@@ -42,7 +42,8 @@
  * Options:
  *
  * - `handler` - callback - The callback to handle errors. You can set this to any callable type,
- *    including anonymous functions.
+ *   including anonymous functions.
+ *   Make sure you add App::uses('MyHandler', 'Error'); when using a custom handler class
  * - `level` - int - The level of errors you are interested in capturing.
  * - `trace` - boolean - Include stack traces for errors in log files.
  *
@@ -64,6 +65,7 @@
  *
  * - `handler` - callback - The callback to handle exceptions. You can set this to any callback type,
  *   including anonymous functions.
+ *   Make sure you add App::uses('MyHandler', 'Error'); when using a custom handler class
  * - `renderer` - string - The class responsible for rendering uncaught exceptions.  If you choose a custom class you
  *   should place the file for that class in app/Lib/Error. This class needs to implement a render method.
  * - `log` - boolean - Should Exceptions be logged?
@@ -128,6 +130,16 @@
  *
  */
 	//Configure::write('Cache.check', true);
+
+/**
+ * Enable cache view prefixes.
+ *
+ * If set it will be prepended to the cache name for view file caching. This is
+ * helpful if you deploy the same application via multiple subdomains and languages,
+ * for instance. Each version can then have its own view cache namespace.
+ * Note: The final cache file name will then be `prefix_cachefilename`.
+ */
+	//Configure::write('Cache.viewPrefix', 'prefix');
 
 /**
  * Defines the default error type when using the log() function. Used for
@@ -226,23 +238,22 @@
 	Configure::write('Acl.database', 'default');
 
 /**
- * Uncomment this line and correct your server timezone to fix 
+ * Uncomment this line and correct your server timezone to fix
  * any date & time related errors.
  */
 	//date_default_timezone_set('UTC');
 
 /**
- * Pick the caching engine to use.  If APC is enabled use it.
- * If running via cli - apc is disabled by default. ensure it's available and enabled in this case
+ * Configure the cache handlers that CakePHP will use for internal
+ * metadata like class maps, and model schema.
+ *
+ * By default File is used, but for improved performance you should use APC.
  *
  * Note: 'default' and other application caches should be configured in app/Config/bootstrap.php.
- *       Please check the comments in boostrap.php for more info on the cache engines available 
+ *       Please check the comments in boostrap.php for more info on the cache engines available
  *       and their setttings.
  */
 $engine = 'File';
-if (extension_loaded('apc') && function_exists('apc_dec') && (php_sapi_name() !== 'cli' || ini_get('apc.enable_cli'))) {
-	$engine = 'Apc';
-}
 
 // In development mode, caches should expire quickly.
 $duration = '+999 days';

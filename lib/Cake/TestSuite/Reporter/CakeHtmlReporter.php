@@ -169,6 +169,7 @@ class CakeHtmlReporter extends CakeBaseReporter {
 /**
  * Paints a code coverage report.
  *
+ * @param array $coverage
  * @return void
  */
 	public function paintCoverage(array $coverage) {
@@ -201,8 +202,8 @@ class CakeHtmlReporter extends CakeBaseReporter {
 		$show = $this->_queryString($show);
 		$query = $this->_queryString($query);
 
-		echo "<p><a href='" . $this->baseUrl() . $show . "'>Run more tests</a> | <a href='" . $this->baseUrl() . $query . "&show_passes=1'>Show Passes</a> | \n";
-		echo "<a href='" . $this->baseUrl() . $query . "&debug=1'>Enable Debug Output</a> | \n";
+		echo "<p><a href='" . $this->baseUrl() . $show . "'>Run more tests</a> | <a href='" . $this->baseUrl() . $query . "&amp;show_passes=1'>Show Passes</a> | \n";
+		echo "<a href='" . $this->baseUrl() . $query . "&amp;debug=1'>Enable Debug Output</a> | \n";
 		echo "<a href='" . $this->baseUrl() . $query . "&amp;code_coverage=true'>Analyze Code Coverage</a></p>\n";
 	}
 
@@ -242,6 +243,7 @@ class CakeHtmlReporter extends CakeBaseReporter {
  *
  * @param PHPUnit_Framework_AssertionFailedError $message Failure object displayed in
  *   the context of the other tests.
+ * @param mixed $test
  * @return void
  */
 	public function paintFail($message, $test) {
@@ -249,10 +251,12 @@ class CakeHtmlReporter extends CakeBaseReporter {
 		$testName = get_class($test) . '(' . $test->getName() . ')';
 
 		$actualMsg = $expectedMsg = null;
-		$failure = $message->getComparisonFailure();
-		if (is_object($failure)) {
-			$actualMsg = $message->getComparisonFailure()->getActualAsString();
-			$expectedMsg = $message->getComparisonFailure()->getExpectedAsString();
+		if (method_exists($message, 'getComparisonFailure')) {
+			$failure = $message->getComparisonFailure();
+			if (is_object($failure)) {
+				$actualMsg = $failure->getActualAsString();
+				$expectedMsg = $failure->getExpectedAsString();
+			}
 		}
 
 		echo "<li class='fail'>\n";
@@ -292,6 +296,7 @@ class CakeHtmlReporter extends CakeBaseReporter {
  * Paints a PHP exception.
  *
  * @param Exception $exception Exception to display.
+ * @param mixed $test
  * @return void
  */
 	public function paintException($message, $test) {

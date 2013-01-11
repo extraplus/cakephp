@@ -20,6 +20,7 @@
  */
 
 App::uses('AppHelper', 'View/Helper');
+App::uses('Hash', 'Utility');
 
 /**
  * Text helper library.
@@ -50,6 +51,8 @@ class TextHelper extends AppHelper {
 
 /**
  * String utility instance
+ *
+ * @var stdClass
  */
 	protected $_engine;
 
@@ -101,8 +104,9 @@ class TextHelper extends AppHelper {
 		$this->_placeholders = array();
 		$options += array('escape' => true);
 
+		$pattern = '#(?<!href="|src="|">)((?:https?|ftp|nntp)://[a-z0-9.\-:]+(?:/[^\s]*)?)#i';
 		$text = preg_replace_callback(
-			'#(?<!href="|src="|">)((?:https?|ftp|nntp)://[^\s<>()]+)#i',
+			$pattern,
 			array(&$this, '_insertPlaceHolder'),
 			$text
 		);
@@ -118,7 +122,7 @@ class TextHelper extends AppHelper {
 	}
 
 /**
- * Saves the placeholder for a string, for later use.  This gets around double
+ * Saves the placeholder for a string, for later use. This gets around double
  * escaping content in URL's.
  *
  * @param array $matches An array of regexp matches.
