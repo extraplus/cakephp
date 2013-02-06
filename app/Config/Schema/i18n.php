@@ -24,6 +24,9 @@
 /*
  *
  * Using the Schema command line utility
+ *
+ * Use it to configure database for i18n
+ *
  * cake schema run create i18n
  */
 class i18nSchema extends CakeSchema {
