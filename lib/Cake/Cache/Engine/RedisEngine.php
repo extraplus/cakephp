@@ -55,7 +55,8 @@ class RedisEngine extends CacheEngine {
  */
 	public function init($settings = array()) {
 		if (!class_exists('Redis')) {
-			return false;
+			//return false;
+			return 'Redis class missing';
 		}
 		parent::init(array_merge(array(
 			'engine' => 'Redis',
@@ -86,7 +87,8 @@ class RedisEngine extends CacheEngine {
 				$return = $this->_Redis->pconnect($this->settings['server'], $this->settings['port'], $this->settings['timeout']);
 			}
 		} catch (RedisException $e) {
-			return false;
+			//return false;
+			return $e->getMessage();
 		}
 		if ($return && $this->settings['password']) {
 			$return = $this->_Redis->auth($this->settings['password']);
