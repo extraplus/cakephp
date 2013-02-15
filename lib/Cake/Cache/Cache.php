@@ -165,7 +165,7 @@ class Cache {
 		$theResult = self::$_engines[$name]->init($config);
 		if ($theResult !== true) {
 				//throw new CacheException(__d('cake_dev', 'Cache engine %s is not properly configured.', $name));
-				throw new CacheException(__d('cake_dev', $theResult . ' - Cache engine %s is not properly configured.', $name));
+				throw new CacheException(__d('cake_dev', '%s - Cache engine %s is not properly configured.', $theResult, $name));
 		}
 		if (self::$_engines[$name]->settings['probability'] && time() % self::$_engines[$name]->settings['probability'] === 0) {
 			self::$_engines[$name]->gc();
